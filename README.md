@@ -1,31 +1,60 @@
-Bank Management System — C++
-A console-based bank management system built in C++ as part of a structured C++ learning roadmap.
-Features
+# 🏦 Bank Management System (C++)
 
-Show all clients
-Add new client
-Delete client by account number
-Update client information
-Find client by account number
+A **console-based Bank Management System** built with **C++** that allows you to manage client accounts stored in a text file.
 
-Data Storage
-Client data is persisted in a .txt file using a custom #//# delimiter format. No external database is used — all file I/O is handled manually using fstream.
-What I Practiced
+This project simulates basic banking operations and focuses on practicing **file handling, structs, vectors, and modular programming**.
 
-Structs
-File handling (fstream)
-Vectors and iteration
-String parsing and splitting
-Modular function design
+---
 
-How to Run
+## ✨ Features
 
-Clone the repo
-Open in Visual Studio or any C++ compiler
-Build and run main.cpp
-Make sure Clients.txt exists in the same directory as the executable
+* 📋 Show all clients
+* ➕ Add a new client
+* ❌ Delete a client by account number
+* ✏️ Update client information
+* 🔎 Find a client by account number
 
-Stack
+---
 
-Language: C++
-IDE: Visual Studio
+## ▶️ How to Run
+
+1. Clone the repository
+2. Open the project in **Visual Studio** or any C++ compiler
+3. Build and run `main.cpp`
+4. Make sure `Clients.txt` exists in the same directory as the executable
+
+---
+
+## 💾 Data Storage
+
+Client data is stored in a **`.txt` file** using a custom delimiter format:
+
+```
+#//#
+```
+
+Example record:
+
+```
+A150#//#1234#//#John Doe#//#555-1234#//#5000
+```
+
+All data operations are handled manually using **C++ file streams (`fstream`)**.
+No external database is used.
+
+---
+
+## 🧠 What I Practiced
+
+* Using **Structs** to model client data
+* **File handling** with `fstream`
+* Working with **vectors** and iteration
+* **String parsing and splitting**
+* Writing **modular functions** for cleaner code
+
+---
+
+## 🛠 Built With
+
+* **C++**
+* **Visual Studio**
