@@ -516,13 +516,14 @@ void DisplayTransactionsMenu()
   cout << "============================================" << endl;
 }
 
-void WithDrawOperation(vector <stClient> &vClients ,const string &AccountNumber ,const double &WithDrawAmmount)
+
+void DepositOperation(vector <stClient> &vClients ,const string &AccountNumber ,const double &DepositAmount)
 {
  for(stClient &C : vClients)
  {
    if(C.AccNumber == AccountNumber)
    {
-      C.AccBalance -= WithDrawAmmount;
+      C.AccBalance += DepositAmount;
       break; 
    }
  }
@@ -568,23 +569,11 @@ void WithDrawMoney(vector <stClient> &vClients)
   if(toupper(Choice) == 'Y')
   {
 
-    WithDrawOperation(vClients ,AccountNumber ,WithDrawAmmount);
+    DepositOperation(vClients ,AccountNumber ,-WithDrawAmmount);
     SaveToFile(ClientsFileName ,vClients);
     
     cout<<"\nAmmount Withdrawed Successfully !";
   }
-}
-
-void DepositOperation(vector <stClient> &vClients ,const string &AccountNumber ,const double &DepositAmount)
-{
- for(stClient &C : vClients)
- {
-   if(C.AccNumber == AccountNumber)
-   {
-      C.AccBalance += DepositAmount;
-      break; 
-   }
- }
 }
 
 void DepositMoney(vector <stClient> &vClients)
