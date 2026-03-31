@@ -723,6 +723,6 @@ void MainMenu(vector <stClient> &vClients)
 int main()
 {
  vector <stClient> vClients;
-
+ 
  MainMenu(vClients);
 }
