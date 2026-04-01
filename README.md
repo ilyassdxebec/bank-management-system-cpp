@@ -1,88 +1,96 @@
 # 🏦 Bank Management System (C++)
 
-A **console-based Bank Management System** built with **C++** that allows you to manage client accounts stored in a text file.
-
-This project simulates basic banking operations and focuses on practicing **file handling, structs, vectors, and modular programming**.
-
----
-
-# ✨ Features
-
-* 📋 Show all clients
-* ➕ Add a new client
-* ❌ Delete a client by account number
-* ✏️ Update client information
-* 🔎 Find a client by account number
-* 💰 Deposit money
-* 💸 Withdraw money
-* 📊 Show total balances
+A console-based Bank Management System built with C++ that manages client accounts stored in a text file.  
+It simulates basic banking operations and focuses on practicing file handling, structs, vectors, and modular programming.
 
 ---
 
-# 🖥️ Program Screens
+## ✨ Features
 
-## Main Menu
+### 👥 Client Management
+- 📋 Show all clients
+- ➕ Add a new client
+- ❌ Delete a client by account number
+- ✏️ Update client information
+- 🔎 Find a client by account number
 
-![Main Menu](images/main-menu.png)
+### 💰 Transactions
+- 💰 Deposit money
+- 💸 Withdraw money
+- 📊 Show total balances
 
-## Transactions Menu
-
-![Transactions Menu](images/transactions-menu.png)
+### 🔐 User & Access Management
+- 🔑 Login system
+- 👤 Manage users (CRUD operations)
+- 🛡️ Admin permissions
+- 🚪 Logout functionality
+- 💾 Users stored in a separate file
 
 ---
 
-# ▶️ How to Run
+## 🖥️ Program Screens
 
-1. Clone the repository
+**Main Menu**
 
-```
+> *(screenshot here)*
+
+**Transactions Menu**
+
+> *(screenshot here)*
+
+---
+
+## ▶️ How to Run
+
+**1. Clone the repository**
+```bash
 git clone https://github.com/ilyassdxebec/bank-management-system-cpp.git
 ```
 
-2. Open the project in **Visual Studio** or any C++ compiler
+**2. Open the project**  
+Use Visual Studio or any C++ compiler.
 
-3. Build and run:
-
-```
+**3. Run the program**
+```bash
 main.cpp
 ```
 
-4. Make sure the file **Clients.txt** exists in the same directory as the executable.
+**4. Important**  
+Make sure `Clients.txt` exists in the same directory as the executable.
 
 ---
 
-# 💾 Data Storage
+## 💾 Data Storage
 
-Client data is stored in a **`.txt` file** using a custom delimiter format:
-
+Client data is stored in a `.txt` file using a custom delimiter:
 ```
 #//#
 ```
 
-Example record:
-
+Example:
 ```
 A150#//#1234#//#John Doe#//#555-1234#//#5000
 ```
 
-All data operations are handled manually using **C++ file streams (`fstream`)**.
-
-No external database is used.
-
----
-
-# 🧠 What I Practiced
-
-* Using **Structs** to model client data
-* **File handling** with `fstream`
-* Working with **vectors** and iteration
-* **String parsing and splitting**
-* Writing **modular functions** for cleaner code
-* Building **console menu systems**
+User data (login & permissions) is stored in a separate file using a similar format.  
+All operations use C++ file streams (`fstream`) — no database.
 
 ---
 
-# 🛠 Built With
+## 🧠 What I Practiced
 
-* **C++**
-* **Visual Studio**
+- Structs for modeling data
+- File handling (`fstream`)
+- Vectors & iteration
+- String parsing & splitting
+- Modular programming
+- Console menu systems
+- Authentication (login system)
+- User management (CRUD + roles)
+
+---
+
+## 🛠️ Built With
+
+- C++
+- Visual Studio
