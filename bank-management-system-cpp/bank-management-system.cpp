@@ -7,6 +7,7 @@ using namespace std;
 
 enum enMenuChoice {Show = 1 ,Add = 2 ,Delete = 3 ,Update = 4 ,Find = 5 ,Transactions = 6 ,ManageUsers = 7,Logout = 8};
 enum enTransactionsMenu {Deposit = 1 ,Withdraw = 2 ,TotalBalances = 3 ,ReturnMainMenu = 4};
+enum enManageUsersMenu {ListUsers = 1,AddUser = 2 ,DeleteUser = 3 ,UpdateUser = 4 ,FindUser = 5 ,BackToMainMenu = 6};
 
 const string ClientsFileName = "ClientsData.txt";
 const string UsersFileName = "UsersData.txt";
@@ -181,7 +182,7 @@ void PrintClientInfo(const stClient &Client)
     cout << "Account Balance: " << Client.AccBalance  << endl;
 }
 
-void PrintTableHeader(const vector<stClient> &Clients)
+void PrintClientsTableHeader(const vector<stClient> &Clients)
 {
     cout << "\n++++++++++++Clients List has (" << Clients.size() << ") Client(s)++++++++++++\n\n";
 }
@@ -191,7 +192,7 @@ void PrintTotlalBalancesHeader(const vector<stClient> &Clients)
     cout << "\n++++++++++++Balances List has (" << Clients.size() << ") Client(s)++++++++++++\n\n";
 }
 
-void PrintTableColumns()
+void PrintTableColumnsForClients()
 {
     cout << "|________________|_____________|_______________________|________________|________________\n";
     cout << "| Account Number | PinCode     | Client Name           | Phone          | Balance  \n";
@@ -249,12 +250,14 @@ void PrintClientInfoInTable(const stClient &Client)
          << "|" << left << setw(15) << Client.AccBalance << endl;
 }
 
-void PrintTable(const vector<stClient> &Clients)
+void PrintTable(const vector<stClient> &vClients)
 {
-    PrintTableHeader(Clients);
-    PrintTableColumns();
+    system("cls");
+    
+    PrintClientsTableHeader(vClients);
+    PrintTableColumnsForClients();
 
-    for(const stClient &x : Clients)
+    for(const stClient &x : vClients)
     {
         PrintClientInfoInTable(x);
     }
@@ -481,7 +484,7 @@ void UpdateClientInFile(vector<stClient> &vClients)
     }
 }
 
-int ReadMenuChoice()
+int ReadMainMenuChoice()
 {
  short Choice;
  do
@@ -671,6 +674,67 @@ void DisplayLoginScreenHeader()
     cout<<"===============================\n";
 }
 
+void PrintUsersTableHeader(const vector<stUser> &Users)
+{
+    cout << "\n++++++++++++Users List has (" << Users.size() << ") Users(s)++++++++++++\n\n";
+}
+
+void PrintTableColumnsForUsers()
+{
+    cout << "|________________|_____________|_______________________|\n";
+    cout << "| UserName       | Password    | Permissions           |\n";
+    cout << "|________________|_____________|_______________________|\n";
+}
+
+void PrintUsersInfoInTable(const stUser &User)
+{
+    cout << "|" << left << setw(16) << User.Username
+         << "|" << left << setw(13) << User.Password
+         << "|" << left << setw(23) << User.Permissions<<endl;
+}
+
+void PrintUsersTable(const vector <stUser> &vUsers)
+{
+   system("cls");
+
+   PrintUsersTableHeader(vUsers);
+   PrintTableColumnsForUsers();
+   
+   for(const stUser &x : vUsers)
+   {
+     PrintUsersInfoInTable(x);
+   }
+
+   cout << "|________________|_____________|_______________________|\n";
+}
+
+int ReadManageUsersMenuChoice()
+{
+ short Choice;
+ do
+ {
+   cout<<"\nChoose what do you want to do ? [1-6]"<<endl;
+   cin>>Choice;
+
+ } while (Choice > 6 || Choice < 1);
+
+ return Choice;
+}
+
+void DisplayManageUsersMenuScreen()
+{
+  cout << "============================================" << endl;
+  cout << "       +++ Manage Users Menu Screen +++              " << endl;
+  cout << "============================================" << endl;
+  cout << "       [1] List Users."<<endl;
+  cout << "       [2] Add New User."<<endl;
+  cout << "       [3] Delete User."<<endl;
+  cout << "       [4] Update User."<<endl;
+  cout << "       [5] Find User."<<endl;
+  cout << "       [6] MainMenu."<<endl;
+  cout << "============================================" << endl;
+}
+
 void TransactionsMenu(vector <stClient> &vClients)
 {
     while(true)
@@ -710,6 +774,47 @@ void TransactionsMenu(vector <stClient> &vClients)
   }
 }
 
+void ManageUsersMenu(vector <stUser> &vUsers)
+{
+    while(true)
+  {
+    vUsers = LoadUsersDataFromFile(UsersFileName); 
+    
+    system("cls");
+    DisplayManageUsersMenuScreen();
+
+    enManageUsersMenu choice = (enManageUsersMenu) ReadManageUsersMenuChoice();
+
+    switch (choice)
+    {
+      
+    case ListUsers:
+
+      PrintUsersTable(vUsers);
+      PauseAndReturn();
+      break;
+
+    case AddUser:
+      break;      
+     
+    case DeleteUser:
+      break;
+      
+    case UpdateUser:
+      break;
+      
+    case FindUser:
+      break;
+      
+    case BackToMainMenu:
+      return;
+
+    default:
+      break;
+    }
+  }
+}
+
 void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 {
 
@@ -720,7 +825,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     system("cls");
     DisplayMainMenuScreen();
 
-    enMenuChoice choice = (enMenuChoice) ReadMenuChoice();
+    enMenuChoice choice = (enMenuChoice) ReadMainMenuChoice();
 
     switch (choice)
     {
@@ -761,7 +866,9 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
         break;
 
     case ManageUsers:
-        break;//TODO
+
+        ManageUsersMenu(vUsers);
+        break;
 
     case Logout:
          return;
