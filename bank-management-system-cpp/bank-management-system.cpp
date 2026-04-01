@@ -5,10 +5,11 @@
 #include<iomanip>
 using namespace std;
 
-enum enMenuChoice {Show = 1 ,Add = 2 ,Delete = 3 ,Update = 4 ,Find = 5 ,Transactions = 6 ,Exit = 7};
+enum enMenuChoice {Show = 1 ,Add = 2 ,Delete = 3 ,Update = 4 ,Find = 5 ,Transactions = 6 ,ManageUsers = 7,Logout = 8};
 enum enTransactionsMenu {Deposit = 1 ,Withdraw = 2 ,TotalBalances = 3 ,ReturnMainMenu = 4};
 
 const string ClientsFileName = "ClientsData.txt";
+const string UsersFileName = "UsersData.txt";
 
 struct stClient
 {
@@ -18,6 +19,13 @@ struct stClient
     string PhoneNumber;
     double AccBalance;
     bool MarkForDelete = false;
+};
+
+struct stUser
+{
+    string Username;
+    string Password;
+    int Permissions;
 };
 
 vector<string> SplitStringToWords(string S, string delim = "#//#")
@@ -46,7 +54,7 @@ vector<string> SplitStringToWords(string S, string delim = "#//#")
     return vWords;
 }
 
-stClient ConvertLineToRecord(const string &Line, string delim = "#//#")
+stClient ConvertClientLineToRecord(const string &Line, string delim = "#//#")
 {
     stClient ClientData;
     vector<string> temp = SplitStringToWords(Line, delim);
@@ -60,7 +68,7 @@ stClient ConvertLineToRecord(const string &Line, string delim = "#//#")
     return ClientData;
 }
 
-string ConvertRecordToLine(const stClient &Client, string delim = "#//#")
+string ConvertClientRecordToLine(const stClient &Client, string delim = "#//#")
 {
     string Line = "";
 
@@ -71,6 +79,18 @@ string ConvertRecordToLine(const stClient &Client, string delim = "#//#")
     Line += to_string(Client.AccBalance);
 
     return Line;
+}
+
+stUser ConvertUserLineToRecord(const string &Line, string delim = "#//#")
+{
+    stUser UserData;
+    vector<string> temp = SplitStringToWords(Line, delim);
+
+    UserData.Username   = temp.at(0);
+    UserData.Password   = temp.at(1);
+    UserData.Permissions = stoi(temp.at(2));
+
+    return UserData;
 }
 
 vector<stClient> LoadClientsDataFromFile(const string &FileName)
@@ -86,7 +106,7 @@ vector<stClient> LoadClientsDataFromFile(const string &FileName)
 
         while(getline(MyFile, Line))
         {
-            Clients.push_back(ConvertLineToRecord(Line));
+            Clients.push_back(ConvertClientLineToRecord(Line));
         }
 
         MyFile.close();
@@ -95,7 +115,29 @@ vector<stClient> LoadClientsDataFromFile(const string &FileName)
     return Clients;
 }
 
-void SaveToFile(const string &FileName, vector<stClient> &vClients)
+vector<stUser> LoadUsersDataFromFile(const string &FileName)
+{
+    fstream MyFile;
+    vector<stUser> Users;
+
+    MyFile.open(FileName, ios::in);
+
+    if(MyFile.is_open())
+    {
+        string Line;
+
+        while(getline(MyFile, Line))
+        {
+            Users.push_back(ConvertUserLineToRecord(Line));
+        }
+
+        MyFile.close();
+    }
+
+    return Users;
+}
+
+void SaveClientsRecordToFile(const string &FileName, vector<stClient> &vClients)
 {
     fstream MyFile;
 
@@ -107,7 +149,7 @@ void SaveToFile(const string &FileName, vector<stClient> &vClients)
         {
             if(C.MarkForDelete != true)
             {
-                MyFile << ConvertRecordToLine(C) << endl;
+                MyFile << ConvertClientRecordToLine(C) << endl;
             }
         }
 
@@ -275,7 +317,7 @@ void AddNewClient(string &AccountNumber)
     string Line;
 
     Client = ReadClientData(AccountNumber);
-    Line   = ConvertRecordToLine(Client);
+    Line   = ConvertClientRecordToLine(Client);
 
     AddLineToFile(Line, ClientsFileName);
 }
@@ -353,7 +395,7 @@ void DeleteClientFromFile(vector<stClient> &vClients)
         if(toupper(Choice) == 'Y')
         {
             MarkClientForDelete(vClients, AccountNumber);
-            SaveToFile(ClientsFileName, vClients);
+            SaveClientsRecordToFile(ClientsFileName, vClients);
             
             cout << "\nClient was deleted Successfully !";
         }
@@ -424,7 +466,7 @@ void UpdateClientInFile(vector<stClient> &vClients)
         if(toupper(Choice) == 'Y')
         {
             UpdateClient(vClients, AccountNumber);
-            SaveToFile(ClientsFileName, vClients);
+            SaveClientsRecordToFile(ClientsFileName, vClients);
 
             cout << "\nClient Updated Successfully !";
         }
@@ -444,10 +486,10 @@ int ReadMenuChoice()
  short Choice;
  do
  {
-   cout<<"\nChoose what do you want to do ? [1-7]"<<endl;
+   cout<<"\nChoose what do you want to do ? [1-8]"<<endl;
    cin>>Choice;
 
- } while (Choice > 7 || Choice < 1);
+ } while (Choice > 8 || Choice < 1);
 
  return Choice;
 }
@@ -463,7 +505,8 @@ void DisplayMainMenuScreen()
   cout << "       [4] Update Client Info."<<endl;
   cout << "       [5] Find Client Info."<<endl;
   cout << "       [6] TransactionsMenu."<<endl;
-  cout << "       [7] Exit."<<endl;
+  cout << "       [7] Manage Users."<<endl;
+  cout << "       [8] Logout."<<endl;
   cout << "============================================" << endl;
 }
 
@@ -570,7 +613,7 @@ void WithDrawMoney(vector <stClient> &vClients)
   {
 
     DepositOperation(vClients ,AccountNumber ,-WithDrawAmmount);
-    SaveToFile(ClientsFileName ,vClients);
+    SaveClientsRecordToFile(ClientsFileName ,vClients);
     
     cout<<"\nAmmount Withdrawed Successfully !";
   }
@@ -615,10 +658,17 @@ void DepositMoney(vector <stClient> &vClients)
   {
 
     DepositOperation(vClients ,AccountNumber ,Deposit);
-    SaveToFile(ClientsFileName ,vClients);
+    SaveClientsRecordToFile(ClientsFileName ,vClients);
     
     cout<<"\nAmmount Deposited Successfully !";
   }
+}
+
+void DisplayLoginScreenHeader()
+{
+    cout<<"===============================\n";
+    cout<<"         Login Screen     \n";
+    cout<<"===============================\n";
 }
 
 void TransactionsMenu(vector <stClient> &vClients)
@@ -660,7 +710,7 @@ void TransactionsMenu(vector <stClient> &vClients)
   }
 }
 
-void MainMenu(vector <stClient> &vClients)
+void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 {
 
   while(true)
@@ -710,19 +760,66 @@ void MainMenu(vector <stClient> &vClients)
         TransactionsMenu(vClients);
         break;
 
+    case ManageUsers:
+        break;//TODO
 
-    case Exit:
-        return;
+    case Logout:
+         return;
 
     default:
         break;
-    }         
+    }       
+  }
+}
+
+bool IsUserLoginInfoCorrect(const vector <stUser> &vUsers ,const string &Username ,const string &Password)
+{
+ for(const stUser &X : vUsers)
+ {
+   if(X.Username == Username)
+   {
+    if(X.Password == Password)
+    {
+      return true;
+    }
+   }
+ }
+  return false;
+}
+
+void Login(vector <stUser> &vUsers ,vector <stClient> &vClients)
+{
+  string Username ,Password;
+  
+  vUsers = LoadUsersDataFromFile(UsersFileName);
+
+  system("cls");
+  DisplayLoginScreenHeader();  
+
+  while(true)
+  {
+    cout<<"\nPlease enter Username : ";
+    cin>>Username;
+
+    cout<<"Please enter Password? : ";
+    cin>>Password;
+
+    if(IsUserLoginInfoCorrect(vUsers ,Username ,Password))
+       return MainMenu(vClients ,vUsers);
+
+    system("cls");
+    cout<<"\nInvalid Username/Password Info!!!\n";
+  
   }
 }
 
 int main()
 {
  vector <stClient> vClients;
- 
- MainMenu(vClients);
+ vector <stUser> vUsers;
+
+ while(true)
+ {
+  Login(vUsers ,vClients);
+ }
 }
