@@ -82,6 +82,16 @@ string ConvertClientRecordToLine(const stClient &Client, string delim = "#//#")
     return Line;
 }
 
+string ConvertUserRecordToLine(const stUser &User, string delim = "#//#")
+{
+    string Line = "";
+
+    Line += User.Username   + delim;
+    Line += User.Password    + delim;
+
+    return Line;
+}
+
 stUser ConvertUserLineToRecord(const string &Line, string delim = "#//#")
 {
     stUser UserData;
@@ -314,7 +324,7 @@ stClient ReadClientData(const string &AccountNumber)
     return Client;
 }
 
-void AddNewClient(string &AccountNumber)
+void AddNewClientToFile(string &AccountNumber)
 {
     stClient Client;
     string Line;
@@ -336,11 +346,12 @@ void CheckBeforeAddingClient(vector <stClient> &vClients)
  while(FindClientWithAccNumber(Client ,AccountNumber ,vClients))
  {
   cout<<"\nClient With Account Number "<<AccountNumber<<" Already Exists !!"<<endl;
+
   cout<<"Please enter another Account Number : ";
   cin>>AccountNumber;
  }
 
- AddNewClient(AccountNumber);
+ AddNewClientToFile(AccountNumber);
 }
 
 void AddClients(vector <stClient> &vClients)
@@ -708,6 +719,80 @@ void PrintUsersTable(const vector <stUser> &vUsers)
    cout << "|________________|_____________|_______________________|\n";
 }
 
+bool FindUserWithUserName(stUser &User, string UserName, const vector<stUser> &vUsers)
+{
+    for(const stUser &x : vUsers)
+    {
+        if(x.Username == UserName)
+        {
+           User = x;
+           return true;
+        }
+    }
+
+    return false;
+}
+
+void AddNewUserToFile(string &UserName ,string &Password)
+{
+    stUser User;
+    string Line;
+
+    User.Username = UserName;
+    User.Password = Password;
+
+    Line   = ConvertUserRecordToLine(User);
+
+    AddLineToFile(Line, UsersFileName);
+}
+
+void CheckBeforeAddingUser(vector <stUser> &vUsers)
+{
+ string UserName;
+ string Password;
+ stUser User;
+
+ cout<<"\nEnter UserName : ";
+ cin>>UserName;
+
+ while(FindUserWithUserName(User ,UserName ,vUsers))
+ {
+  cout<<"\nUser With UserName "<<UserName<<" Already Exists !!"<<endl;
+
+  cout<<"Please enter another User: ";
+  cin>>UserName;
+ }
+ 
+ cout<<"\nEnter Password : ";
+ cin>>Password;
+
+ AddNewUserToFile(UserName ,Password);
+}
+
+void AddUsers(vector <stUser> &vUsers)
+{
+    char Choice;
+
+    do
+    {
+        system("cls");
+
+        cout<<"===============================\n";
+        cout<<"     Add New User Screen     \n";
+        cout<<"===============================\n";
+
+        cout << "Adding new user :\n\n";
+
+        CheckBeforeAddingUser(vUsers);
+
+        cout << "\nUser Added Successfully, Do you want to add more users? (y/n) : ";
+        cin >> Choice;
+
+    } while(toupper(Choice) == 'Y');
+
+    cout << "\nAll users Have been Added Successfully !!!";
+}
+
 int ReadManageUsersMenuChoice()
 {
  short Choice;
@@ -795,6 +880,9 @@ void ManageUsersMenu(vector <stUser> &vUsers)
       break;
 
     case AddUser:
+    
+      AddUsers(vUsers);
+      PauseAndReturn();
       break;      
      
     case DeleteUser:
