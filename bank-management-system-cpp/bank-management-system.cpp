@@ -183,6 +183,22 @@ void AddLineToFile(const string &Line, const string &FileName)
     MyFile.close();
 }
 
+bool IsFeatureAvailableForUser(const short &FeatureNumber ,const short &Permission)
+{
+  return ((FeatureNumber & Permission) == Permission);
+}
+
+void DisplayAccessDenied()
+{
+ system("cls");
+
+  cout<<"===============================\n";
+  cout<<"Access Denied,\n";
+  cout<<"You Don't have permission to do this,\n";
+  cout<<"Please Contact your admin!\n";
+  cout<<"===============================\n";
+}
+
 void PrintClientInfo(const stClient &Client)
 {
     cout << "\nThe Following are the client details : " << endl;
@@ -261,9 +277,10 @@ void PrintClientInfoInTable(const stClient &Client)
          << "|" << left << setw(15) << Client.AccBalance << endl;
 }
 
-void PrintTable(const vector<stClient> &vClients)
+void PrintClientsTable(const vector<stClient> &vClients)
 {
     system("cls");
+    
     
     PrintClientsTableHeader(vClients);
     PrintTableColumnsForClients();
@@ -971,7 +988,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Show:
 
-        PrintTable(vClients);
+        PrintClientsTable(vClients);
         PauseAndReturn();
         break;
 
