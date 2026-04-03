@@ -27,6 +27,7 @@ struct stUser
     string Username;
     string Password;
     short Permission;
+    bool CurrentUser = false;
 };
 
 vector<string> SplitStringToWords(string S, string delim = "#//#")
@@ -971,13 +972,25 @@ void ManageUsersMenu(vector <stUser> &vUsers)
   }
 }
 
+stUser GetCurrentUserInfo(const vector <stUser> &vUsers)
+{
+  for(const stUser &X : vUsers)
+  {
+    if(X.CurrentUser == true)
+    {
+      return X;
+    } 
+  }
+}
+
 void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 {
 
   while(true)
   {
     vClients = LoadClientsDataFromFile(ClientsFileName); 
-    
+    stUser CurrentUser = GetCurrentUserInfo(vUsers);
+
     system("cls");
     DisplayMainMenuScreen();
 
@@ -987,43 +1000,102 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     {
 
     case Show:
+        
+        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        {
+          PrintClientsTable(vClients);
+        }
+        else
+        {
+          DisplayAccessDenied();
+        }
 
-        PrintClientsTable(vClients);
         PauseAndReturn();
         break;
 
     case Add:
 
-        AddClients(vClients);
+
+        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        {
+          AddClients(vClients);
+        }
+        else
+        {
+          DisplayAccessDenied();
+        }
+
         PauseAndReturn();
         break;
 
     case Delete:
         
-        DeleteClientFromFile(vClients);
+        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        {
+          DeleteClientFromFile(vClients);
+        }
+        else
+        {
+          DisplayAccessDenied();
+        }
+
         PauseAndReturn();
         break;
 
     case Update:
 
-        UpdateClientInFile(vClients);
+        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        {
+          UpdateClientInFile(vClients);
+        }
+        else
+        {
+          DisplayAccessDenied();
+        }
+
         PauseAndReturn();
         break;
 
     case Find:
         
-        FindClient(vClients);
+        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        {
+          FindClient(vClients);
+        }
+        else
+        {
+          DisplayAccessDenied();
+        }
+
         PauseAndReturn();
         break;
     
     case Transactions:
 
-        TransactionsMenu(vClients);
+        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        {
+           TransactionsMenu(vClients);
+        }
+        else
+        {
+          DisplayAccessDenied();
+          PauseAndReturn();
+        }
+
         break;
 
     case ManageUsers:
 
-        ManageUsersMenu(vUsers);
+        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        {
+          ManageUsersMenu(vUsers);
+        }
+        else
+        {
+          DisplayAccessDenied();
+          PauseAndReturn();
+        }
+        
         break;
 
     case Logout:
@@ -1035,14 +1107,15 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
   }
 }
 
-bool IsUserLoginInfoCorrect(const vector <stUser> &vUsers ,const string &Username ,const string &Password)
+bool IsUserLoginInfoCorrect(vector <stUser> &vUsers ,const string &Username ,const string &Password)
 {
- for(const stUser &X : vUsers)
+ for(stUser &X : vUsers)
  {
    if(X.Username == Username)
    {
     if(X.Password == Password)
     {
+      X.CurrentUser = true;
       return true;
     }
    }
