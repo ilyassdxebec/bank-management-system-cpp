@@ -26,7 +26,7 @@ struct stUser
 {
     string Username;
     string Password;
-    int Permissions;
+    short Permission;
 };
 
 vector<string> SplitStringToWords(string S, string delim = "#//#")
@@ -88,6 +88,7 @@ string ConvertUserRecordToLine(const stUser &User, string delim = "#//#")
 
     Line += User.Username   + delim;
     Line += User.Password    + delim;
+    Line += to_string(User.Permission);
 
     return Line;
 }
@@ -99,13 +100,13 @@ stUser ConvertUserLineToRecord(const string &Line, string delim = "#//#")
 
     UserData.Username   = temp.at(0);
     UserData.Password   = temp.at(1);
-    UserData.Permissions = stoi(temp.at(2));
+    UserData.Permission = stoi(temp.at(2));
 
     return UserData;
 }
 
 vector<stClient> LoadClientsDataFromFile(const string &FileName)
-{
+{ 
     fstream MyFile;
     vector<stClient> Clients;
 
@@ -697,11 +698,56 @@ void PrintTableColumnsForUsers()
     cout << "|________________|_____________|_______________________|\n";
 }
 
+short GiveUserPermissionOverClientList()
+{
+  char Choice;
+  short Permission = 0;
+
+  cout<<"\nDo you want to give full access : (y/n) ?";
+  cin>>Choice;
+  
+  if(toupper(Choice) == 'Y')
+     return -1;
+
+  cout<<"\nDo you want to give access to : \n\n";
+  
+  cout<<"Show CLient List :  (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (1|Permission);
+
+  cout<<"Add new CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (2|Permission);
+  
+  cout<<"Delete CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (4|Permission);
+  
+  cout<<"Update CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (8|Permission);
+  
+  cout<<"Find CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (16|Permission);
+  
+  cout<<"Transactions : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (32|Permission);
+  
+  cout<<"Manage Users : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (64|Permission);
+
+  return Permission;
+ 
+}
+
 void PrintUsersInfoInTable(const stUser &User)
 {
     cout << "|" << left << setw(16) << User.Username
          << "|" << left << setw(13) << User.Password
-         << "|" << left << setw(23) << User.Permissions<<endl;
+         << "|" << left << setw(23) << User.Permission<<endl;
 }
 
 void PrintUsersTable(const vector <stUser> &vUsers)
@@ -733,44 +779,45 @@ bool FindUserWithUserName(stUser &User, string UserName, const vector<stUser> &v
     return false;
 }
 
-void AddNewUserToFile(string &UserName ,string &Password)
+void AddNewUserToFile(string &UserName ,string &Password ,short &Permission)
 {
     stUser User;
     string Line;
 
     User.Username = UserName;
     User.Password = Password;
+    User.Permission = Permission;
 
     Line   = ConvertUserRecordToLine(User);
 
     AddLineToFile(Line, UsersFileName);
 }
 
-void CheckBeforeAddingUser(vector <stUser> &vUsers)
+void CheckBeforeAddingUser(vector <stUser> &vUsers ,string &UserName ,string &Password)
 {
- string UserName;
- string Password;
- stUser User;
+  stUser User;
 
- cout<<"\nEnter UserName : ";
- cin>>UserName;
-
- while(FindUserWithUserName(User ,UserName ,vUsers))
- {
-  cout<<"\nUser With UserName "<<UserName<<" Already Exists !!"<<endl;
-
-  cout<<"Please enter another User: ";
+  cout<<"\nEnter UserName : ";
   cin>>UserName;
- }
- 
- cout<<"\nEnter Password : ";
- cin>>Password;
 
- AddNewUserToFile(UserName ,Password);
+  while(FindUserWithUserName(User ,UserName ,vUsers))
+  {
+    cout<<"\nUser With UserName "<<UserName<<" Already Exists !!"<<endl;
+
+    cout<<"Please enter another User: ";
+    cin>>UserName;
+  }
+  
+  cout<<"\nEnter Password : ";
+  cin>>Password;
+  
 }
 
 void AddUsers(vector <stUser> &vUsers)
 {
+    string UserName ,Password;
+    short Permission;
+    
     char Choice;
 
     do
@@ -783,7 +830,11 @@ void AddUsers(vector <stUser> &vUsers)
 
         cout << "Adding new user :\n\n";
 
-        CheckBeforeAddingUser(vUsers);
+        CheckBeforeAddingUser(vUsers ,UserName ,Password);
+        
+        Permission = GiveUserPermissionOverClientList();
+
+        AddNewUserToFile(UserName ,Password ,Permission);
 
         cout << "\nUser Added Successfully, Do you want to add more users? (y/n) : ";
         cin >> Choice;
@@ -1017,4 +1068,5 @@ int main()
  {
   Login(vUsers ,vClients);
  }
+ 
 }
