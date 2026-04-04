@@ -513,6 +513,69 @@ stClient ReadClientDataToUpdate(string AccountNumber)
     return Client;
 }
 
+short GiveUserPermissionOverClientList()
+{
+  char Choice;
+  short Permission = 0;
+
+  cout<<"\nDo you want to give full access : (y/n) ?";
+  cin>>Choice;
+  
+  if(toupper(Choice) == 'Y')
+     return -1;
+
+  cout<<"\nDo you want to give access to : \n\n";
+  
+  cout<<"Show CLient List :  (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (1|Permission);
+
+  cout<<"Add new CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (2|Permission);
+  
+  cout<<"Delete CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (4|Permission);
+  
+  cout<<"Update CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (8|Permission);
+  
+  cout<<"Find CLient List : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (16|Permission);
+  
+  cout<<"Transactions : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (32|Permission);
+  
+  cout<<"Manage Users : (y/n) ?";
+  cin>>Choice;
+  if(toupper(Choice) == 'Y') Permission = (64|Permission);
+
+  return Permission;
+ 
+}
+
+stUser ReadUserDataToUpdate(const string &UserName)
+{
+    stUser User;
+
+    cout << "+++Taking User Data+++\n\n";
+
+    User.Username = UserName;
+
+    cin.ignore();
+
+    cout << "Enter Password : ";
+    getline(cin, User.Password);
+    
+    User.Permission = GiveUserPermissionOverClientList();
+
+    return User;
+}
+
 void UpdateClient(vector<stClient> &vClient, string AccountNumber)
 {
     for(stClient &C : vClient)
@@ -520,6 +583,18 @@ void UpdateClient(vector<stClient> &vClient, string AccountNumber)
         if(C.AccNumber == AccountNumber)
         {
             C = ReadClientDataToUpdate(AccountNumber);
+            break;
+        }
+    }
+}
+
+void UpdateToUser(vector<stUser> &vUsers, string UserName)
+{
+    for(stUser &C : vUsers)
+    {
+        if(C.Username == UserName)
+        {
+            C = ReadUserDataToUpdate(UserName);
             break;
         }
     }
@@ -556,6 +631,54 @@ void UpdateClientInFile(vector<stClient> &vClients)
     else
     {
         cout << "\nClient Not Found !";
+    }
+}
+
+bool FindUserWithUserName(stUser &User, string UserName, const vector<stUser> &vUsers)
+{
+    for(const stUser &x : vUsers)
+    {
+        if(x.Username == UserName)
+        {
+           User = x;
+           return true;
+        }
+    }
+
+    return false;
+}
+
+void UpdateUserInFile(vector<stUser> &vUsers)
+{
+    stUser User;
+    char Choice;
+    string UserName;
+    
+    cout<<"\nEnter User's UserName : ";
+    cin>>UserName;
+
+    if(FindUserWithUserName(User, UserName, vUsers))
+    {
+        PrintUserInfo(User);
+
+        cout << "\nAre you sure you want to Update this User? (y/n)";
+        cin >> Choice;
+
+        if(toupper(Choice) == 'Y')
+        {
+            UpdateToUser(vUsers, UserName);
+            SaveUsersRecordToFile(UsersFileName, vUsers);
+
+            cout << "\nUser Updated Successfully !";
+        }
+        else
+        {
+            cout << "\nUser Not Updated !";
+        }
+    }
+    else
+    {
+        cout << "\nUser Not Found !";
     }
 }
 
@@ -609,6 +732,24 @@ void FindClient(vector <stClient> &vClients)
   else
   {
    cout<<"\nClient Not Found!";  
+  }
+}
+
+void Find_User(vector <stUser> &vUsers)
+{
+  string UserName;
+  stUser User;
+
+  cout<<"\nEnter UserName : ";
+  cin>>UserName;
+
+  if(FindUserWithUserName(User ,UserName ,vUsers))
+  {
+    PrintUserInfo(User);
+  }
+  else
+  {
+   cout<<"\nUser Not Found!";  
   }
 }
 
@@ -761,51 +902,6 @@ void PrintTableColumnsForUsers()
     cout << "|________________|_____________|_______________________|\n";
 }
 
-short GiveUserPermissionOverClientList()
-{
-  char Choice;
-  short Permission = 0;
-
-  cout<<"\nDo you want to give full access : (y/n) ?";
-  cin>>Choice;
-  
-  if(toupper(Choice) == 'Y')
-     return -1;
-
-  cout<<"\nDo you want to give access to : \n\n";
-  
-  cout<<"Show CLient List :  (y/n) ?";
-  cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (1|Permission);
-
-  cout<<"Add new CLient List : (y/n) ?";
-  cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (2|Permission);
-  
-  cout<<"Delete CLient List : (y/n) ?";
-  cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (4|Permission);
-  
-  cout<<"Update CLient List : (y/n) ?";
-  cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (8|Permission);
-  
-  cout<<"Find CLient List : (y/n) ?";
-  cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (16|Permission);
-  
-  cout<<"Transactions : (y/n) ?";
-  cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (32|Permission);
-  
-  cout<<"Manage Users : (y/n) ?";
-  cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (64|Permission);
-
-  return Permission;
- 
-}
-
 void PrintUsersInfoInTable(const stUser &User)
 {
     cout << "|" << left << setw(16) << User.Username
@@ -826,20 +922,6 @@ void PrintUsersTable(const vector <stUser> &vUsers)
    }
 
    cout << "|________________|_____________|_______________________|\n";
-}
-
-bool FindUserWithUserName(stUser &User, string UserName, const vector<stUser> &vUsers)
-{
-    for(const stUser &x : vUsers)
-    {
-        if(x.Username == UserName)
-        {
-           User = x;
-           return true;
-        }
-    }
-
-    return false;
 }
 
 void AddNewUserToFile(string &UserName ,string &Password ,short &Permission)
@@ -1046,9 +1128,15 @@ void ManageUsersMenu(vector <stUser> &vUsers)
       break;
       
     case UpdateUser:
+      
+      UpdateUserInFile(vUsers);
+      PauseAndReturn();
       break;
       
     case FindUser:
+      
+      Find_User(vUsers);
+      PauseAndReturn();
       break;
       
     case BackToMainMenu:
