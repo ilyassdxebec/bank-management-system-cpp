@@ -186,18 +186,21 @@ void AddLineToFile(const string &Line, const string &FileName)
 
 bool IsFeatureAvailableForUser(const short &FeatureNumber ,const short &Permission)
 {
-  return ((FeatureNumber & Permission) == Permission);
+  if(Permission == -1) return true;
+
+  return ((FeatureNumber & Permission) == FeatureNumber);
+
 }
 
 void DisplayAccessDenied()
 {
  system("cls");
 
-  cout<<"===============================\n";
+  cout<<"=========================================\n";
   cout<<"Access Denied,\n";
   cout<<"You Don't have permission to do this,\n";
   cout<<"Please Contact your admin!\n";
-  cout<<"===============================\n";
+  cout<<"=========================================\n";
 }
 
 void PrintClientInfo(const stClient &Client)
@@ -974,13 +977,17 @@ void ManageUsersMenu(vector <stUser> &vUsers)
 
 stUser GetCurrentUserInfo(const vector <stUser> &vUsers)
 {
+  stUser CurrentUser;
+
   for(const stUser &X : vUsers)
   {
     if(X.CurrentUser == true)
     {
-      return X;
+      CurrentUser = X;
+      return CurrentUser;
     } 
   }
+  return CurrentUser;
 }
 
 void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
@@ -1001,7 +1008,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Show:
         
-        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(1 ,CurrentUser.Permission))
         {
           PrintClientsTable(vClients);
         }
@@ -1016,7 +1023,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     case Add:
 
 
-        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(2 ,CurrentUser.Permission))
         {
           AddClients(vClients);
         }
@@ -1030,7 +1037,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Delete:
         
-        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(4 ,CurrentUser.Permission))
         {
           DeleteClientFromFile(vClients);
         }
@@ -1044,7 +1051,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Update:
 
-        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(8 ,CurrentUser.Permission))
         {
           UpdateClientInFile(vClients);
         }
@@ -1058,7 +1065,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Find:
         
-        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(16 ,CurrentUser.Permission))
         {
           FindClient(vClients);
         }
@@ -1072,7 +1079,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     
     case Transactions:
 
-        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(32 ,CurrentUser.Permission))
         {
            TransactionsMenu(vClients);
         }
@@ -1086,7 +1093,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case ManageUsers:
 
-        if(IsFeatureAvailableForUser(choice ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(64 ,CurrentUser.Permission))
         {
           ManageUsersMenu(vUsers);
         }
@@ -1095,7 +1102,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
           DisplayAccessDenied();
           PauseAndReturn();
         }
-        
+
         break;
 
     case Logout:
