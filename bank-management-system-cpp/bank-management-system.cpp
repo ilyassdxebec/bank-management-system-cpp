@@ -9,6 +9,9 @@ enum enMenuChoice {Show = 1 ,Add = 2 ,Delete = 3 ,Update = 4 ,Find = 5 ,Transact
 enum enTransactionsMenu {Deposit = 1 ,Withdraw = 2 ,TotalBalances = 3 ,ReturnMainMenu = 4};
 enum enManageUsersMenu {ListUsers = 1,AddUser = 2 ,DeleteUser = 3 ,UpdateUser = 4 ,FindUser = 5 ,BackToMainMenu = 6}; 
 
+enum enMainMenuPermissions {pAll = -1 ,pListClients = 1 ,pAddNewClient = 2 ,pDeleteClient = 4 ,
+                                       pUpdateClient = 8 ,pFindClient = 16 ,pTransactions = 32 ,pManageUsers = 64};
+
 const string ClientsFileName = "ClientsData.txt";
 const string UsersFileName = "UsersData.txt";
 
@@ -523,7 +526,7 @@ short GiveUserPermissionOverClientList()
   cin>>Choice;
   
   if(toupper(Choice) == 'Y')
-     return -1;
+     return pAll;
 
   cout<<"\nDo you want to give access to : \n\n";
   
@@ -950,7 +953,7 @@ void DeleteUserFromFile(vector <stUser> &vUsers)
     
     if(FindUserWithUserName(User ,UserName ,vUsers))
     {   
-        if(User.Permission == -1)
+        if(User.Permission == pAll)
         {
             cout<<"\nYou can't delete an admin!";
             return;          
@@ -1181,7 +1184,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     case Add:
 
 
-        if(IsFeatureAvailableForUser(2 ,stCurrentUser.Permission))
+        if(IsFeatureAvailableForUser(pAddNewClient ,stCurrentUser.Permission))
         {
           AddClients(vClients);
         }
@@ -1195,7 +1198,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Delete:
         
-        if(IsFeatureAvailableForUser(4 ,stCurrentUser.Permission))
+        if(IsFeatureAvailableForUser(pDeleteClient ,stCurrentUser.Permission))
         {
           DeleteClientFromFile(vClients);
         }
@@ -1209,7 +1212,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Update:
 
-        if(IsFeatureAvailableForUser(8 ,stCurrentUser.Permission))
+        if(IsFeatureAvailableForUser(pUpdateClient ,stCurrentUser.Permission))
         {
           UpdateClientInFile(vClients);
         }
@@ -1223,7 +1226,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Find:
         
-        if(IsFeatureAvailableForUser(16 ,stCurrentUser.Permission))
+        if(IsFeatureAvailableForUser(pFindClient ,stCurrentUser.Permission))
         {
           FindClient(vClients);
         }
@@ -1237,7 +1240,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     
     case Transactions:
 
-        if(IsFeatureAvailableForUser(32 ,stCurrentUser.Permission))
+        if(IsFeatureAvailableForUser(pTransactions ,stCurrentUser.Permission))
         {
            TransactionsMenu(vClients);
         }
@@ -1251,7 +1254,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case ManageUsers:
 
-        if(IsFeatureAvailableForUser(64 ,stCurrentUser.Permission))
+        if(IsFeatureAvailableForUser(pManageUsers ,stCurrentUser.Permission))
         {
           ManageUsersMenu(vUsers);
         }
