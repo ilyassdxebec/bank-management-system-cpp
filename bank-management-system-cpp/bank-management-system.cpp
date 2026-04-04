@@ -7,7 +7,7 @@ using namespace std;
 
 enum enMenuChoice {Show = 1 ,Add = 2 ,Delete = 3 ,Update = 4 ,Find = 5 ,Transactions = 6 ,ManageUsers = 7,Logout = 8};
 enum enTransactionsMenu {Deposit = 1 ,Withdraw = 2 ,TotalBalances = 3 ,ReturnMainMenu = 4};
-enum enManageUsersMenu {ListUsers = 1,AddUser = 2 ,DeleteUser = 3 ,UpdateUser = 4 ,FindUser = 5 ,BackToMainMenu = 6};
+enum enManageUsersMenu {ListUsers = 1,AddUser = 2 ,DeleteUser = 3 ,UpdateUser = 4 ,FindUser = 5 ,BackToMainMenu = 6}; 
 
 const string ClientsFileName = "ClientsData.txt";
 const string UsersFileName = "UsersData.txt";
@@ -1167,3 +1167,5 @@ int main()
  }
  
 }
+
+//TODO only add find and update and delete users
