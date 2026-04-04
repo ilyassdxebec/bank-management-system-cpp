@@ -1095,6 +1095,20 @@ void TransactionsMenu(vector <stClient> &vClients)
   }
 }
 
+void ResetCurrentUserWhenLoginOut(vector <stUser> &vUsers)
+{
+    for(stUser &U : vUsers)
+   {
+        if(U.CurrentUser) 
+        {
+            U.CurrentUser = false;
+            SaveUsersRecordToFile(UsersFileName, vUsers);
+
+            break;
+        }
+    }
+}
+
 void ManageUsersMenu(vector <stUser> &vUsers)
 {
     while(true)
@@ -1279,6 +1293,8 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
         break;
 
     case Logout:
+
+         ResetCurrentUserWhenLoginOut(vUsers);
          return;
 
     default:
