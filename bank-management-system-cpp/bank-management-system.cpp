@@ -28,6 +28,7 @@ struct stUser
     string Password;
     short Permission;
     bool CurrentUser = false;
+    bool MarkForDelete = false;
 };
 
 vector<string> SplitStringToWords(string S, string delim = "#//#")
@@ -170,6 +171,26 @@ void SaveClientsRecordToFile(const string &FileName, vector<stClient> &vClients)
     }
 }
 
+void SaveUsersRecordToFile(const string &FileName, vector<stUser> &vUsers)
+{
+    fstream MyFile;
+
+    MyFile.open(FileName, ios::out);
+
+    if(MyFile.is_open())
+    {
+        for(stUser &C : vUsers)
+        {
+            if(C.MarkForDelete != true)
+            {
+                MyFile << ConvertUserRecordToLine(C) << endl;
+            }
+        }
+
+        MyFile.close();
+    }
+}
+
 void AddLineToFile(const string &Line, const string &FileName)
 {
     fstream MyFile;
@@ -211,6 +232,15 @@ void PrintClientInfo(const stClient &Client)
     cout << "Phone Number   : " << Client.PhoneNumber << endl;
     cout << "Name           : " << Client.Name        << endl;
     cout << "Account Balance: " << Client.AccBalance  << endl;
+}
+
+void PrintUserInfo(const stUser &User)
+{
+    cout << "\nThe Following are the User's details : " << endl;
+
+    cout << "UserName : " << User.Username   << endl;
+    cout << "Password       : " << User.Password     << endl;
+    cout << "Permission   : " << User.Permission << endl;
 }
 
 void PrintClientsTableHeader(const vector<stClient> &Clients)
@@ -405,6 +435,18 @@ void MarkClientForDelete(vector<stClient> &vClients, const string &AccountNumber
     for(stClient &C : vClients)
     {
         if(C.AccNumber == AccountNumber)
+        {
+            C.MarkForDelete = true;
+            break;
+        }
+    }
+}
+
+void MarkUserForDelete(vector<stUser> &vUsers, const string &UserName)
+{
+    for(stUser &C : vUsers)
+    {
+        if(C.Username == UserName)
         {
             C.MarkForDelete = true;
             break;
@@ -814,6 +856,46 @@ void AddNewUserToFile(string &UserName ,string &Password ,short &Permission)
     AddLineToFile(Line, UsersFileName);
 }
 
+void DeleteUserFromFile(vector <stUser> &vUsers)
+{
+    stUser User;
+    char Choice;
+    string UserName;
+    
+    cout<<"\nEnter UserName : ";
+    cin>>UserName;
+    
+    if(FindUserWithUserName(User ,UserName ,vUsers))
+    {   
+        if(User.Permission == -1)
+        {
+            cout<<"\nYou can't delete an admin!";
+            return;          
+        }  
+
+        PrintUserInfo(User);
+
+        cout << "\nAre you sure you want to delete this User from file? (y/n)";
+        cin >> Choice;
+        
+        if(toupper(Choice) == 'Y')
+        {
+            MarkUserForDelete(vUsers, UserName);
+            SaveUsersRecordToFile(UsersFileName ,vUsers);
+            
+            cout << "\nUser was deleted Successfully !";
+        }
+        else
+        {
+            cout << "\nUser wasn't deleted !";
+        }
+    }
+    else
+    {
+        cout << "\nUser Not Found !";
+    }  
+}
+
 void CheckBeforeAddingUser(vector <stUser> &vUsers ,string &UserName ,string &Password)
 {
   stUser User;
@@ -958,6 +1040,9 @@ void ManageUsersMenu(vector <stUser> &vUsers)
       break;      
      
     case DeleteUser:
+      
+      DeleteUserFromFile(vUsers);
+      PauseAndReturn();
       break;
       
     case UpdateUser:
@@ -1167,5 +1252,3 @@ int main()
  }
  
 }
-
-//TODO only add find and update and delete users
