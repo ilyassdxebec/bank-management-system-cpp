@@ -532,31 +532,31 @@ short GiveUserPermissionOverClientList()
   
   cout<<"Show CLient List :  (y/n) ?";
   cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (1|Permission);
+  if(toupper(Choice) == 'Y') Permission = (pListClients|Permission);
 
   cout<<"Add new CLient List : (y/n) ?";
   cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (2|Permission);
+  if(toupper(Choice) == 'Y') Permission = (pAddNewClient|Permission);
   
   cout<<"Delete CLient List : (y/n) ?";
   cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (4|Permission);
+  if(toupper(Choice) == 'Y') Permission = (pDeleteClient|Permission);
   
   cout<<"Update CLient List : (y/n) ?";
   cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (8|Permission);
+  if(toupper(Choice) == 'Y') Permission = (pUpdateClient|Permission);
   
   cout<<"Find CLient List : (y/n) ?";
   cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (16|Permission);
+  if(toupper(Choice) == 'Y') Permission = (pFindClient|Permission);
   
   cout<<"Transactions : (y/n) ?";
   cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (32|Permission);
+  if(toupper(Choice) == 'Y') Permission = (pTransactions|Permission);
   
   cout<<"Manage Users : (y/n) ?";
   cin>>Choice;
-  if(toupper(Choice) == 'Y') Permission = (64|Permission);
+  if(toupper(Choice) == 'Y') Permission = (pManageUsers|Permission);
 
   return Permission;
  
