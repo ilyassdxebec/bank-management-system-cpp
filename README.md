@@ -34,13 +34,16 @@ It simulates basic banking operations and focuses on practicing file handling, s
 ## 🖥️ Program Screens
 
 ### Main Menu
-(screenshot placeholder)
+<img width="472" height="365" alt="image" src="https://github.com/user-attachments/assets/485fb863-3044-494a-a3e2-a63fa3b14bc1" />
+
 
 ### Transactions Menu
-(screenshot placeholder)
+<img width="462" height="277" alt="image" src="https://github.com/user-attachments/assets/ea93e62c-b7fc-4aaa-9a08-266054658896" />
+
 
 ### Manage Users Menu
-(screenshot placeholder)
+<img width="436" height="332" alt="image" src="https://github.com/user-attachments/assets/b923161b-59d6-4458-9f15-830422a3a332" />
+
 
 ## ▶️ How to Run
 
