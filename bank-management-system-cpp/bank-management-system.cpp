@@ -27,9 +27,10 @@ struct stUser
     string Username;
     string Password;
     short Permission;
-    bool CurrentUser = false;
     bool MarkForDelete = false;
 };
+
+stUser stCurrentUser;
 
 vector<string> SplitStringToWords(string S, string delim = "#//#")
 {
@@ -1095,20 +1096,6 @@ void TransactionsMenu(vector <stClient> &vClients)
   }
 }
 
-void ResetCurrentUserWhenLoginOut(vector <stUser> &vUsers)
-{
-    for(stUser &U : vUsers)
-   {
-        if(U.CurrentUser) 
-        {
-            U.CurrentUser = false;
-            SaveUsersRecordToFile(UsersFileName, vUsers);
-
-            break;
-        }
-    }
-}
-
 void ManageUsersMenu(vector <stUser> &vUsers)
 {
     while(true)
@@ -1162,28 +1149,12 @@ void ManageUsersMenu(vector <stUser> &vUsers)
   }
 }
 
-stUser GetCurrentUserInfo(const vector <stUser> &vUsers)
-{
-  stUser CurrentUser;
-
-  for(const stUser &X : vUsers)
-  {
-    if(X.CurrentUser == true)
-    {
-      CurrentUser = X;
-      return CurrentUser;
-    } 
-  }
-  return CurrentUser;
-}
-
 void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 {
 
   while(true)
   {
     vClients = LoadClientsDataFromFile(ClientsFileName); 
-    stUser CurrentUser = GetCurrentUserInfo(vUsers);
 
     system("cls");
     DisplayMainMenuScreen();
@@ -1195,7 +1166,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Show:
         
-        if(IsFeatureAvailableForUser(1 ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(1 ,stCurrentUser.Permission))
         {
           PrintClientsTable(vClients);
         }
@@ -1210,7 +1181,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     case Add:
 
 
-        if(IsFeatureAvailableForUser(2 ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(2 ,stCurrentUser.Permission))
         {
           AddClients(vClients);
         }
@@ -1224,7 +1195,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Delete:
         
-        if(IsFeatureAvailableForUser(4 ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(4 ,stCurrentUser.Permission))
         {
           DeleteClientFromFile(vClients);
         }
@@ -1238,7 +1209,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Update:
 
-        if(IsFeatureAvailableForUser(8 ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(8 ,stCurrentUser.Permission))
         {
           UpdateClientInFile(vClients);
         }
@@ -1252,7 +1223,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case Find:
         
-        if(IsFeatureAvailableForUser(16 ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(16 ,stCurrentUser.Permission))
         {
           FindClient(vClients);
         }
@@ -1266,7 +1237,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
     
     case Transactions:
 
-        if(IsFeatureAvailableForUser(32 ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(32 ,stCurrentUser.Permission))
         {
            TransactionsMenu(vClients);
         }
@@ -1280,7 +1251,7 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
 
     case ManageUsers:
 
-        if(IsFeatureAvailableForUser(64 ,CurrentUser.Permission))
+        if(IsFeatureAvailableForUser(64 ,stCurrentUser.Permission))
         {
           ManageUsersMenu(vUsers);
         }
@@ -1293,8 +1264,6 @@ void MainMenu(vector <stClient> &vClients ,vector <stUser> &vUsers)
         break;
 
     case Logout:
-
-         ResetCurrentUserWhenLoginOut(vUsers);
          return;
 
     default:
@@ -1311,7 +1280,7 @@ bool IsUserLoginInfoCorrect(vector <stUser> &vUsers ,const string &Username ,con
    {
     if(X.Password == Password)
     {
-      X.CurrentUser = true;
+      stCurrentUser = X;
       return true;
     }
    }
