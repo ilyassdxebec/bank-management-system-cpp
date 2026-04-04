@@ -1,20 +1,26 @@
-🏦 Bank Management System (C++)
+#🏦 Bank Management System (C++)
 
 A console-based Bank Management System built in C++ that manages client accounts stored in text files.
 It simulates basic banking operations and focuses on practicing file handling, structs, vectors, and modular programming.
 
-✨ Features
-👥 Client Management
+##✨ Features
+
+###👥 Client Management
+
 📋 Show all clients
 ➕ Add a new client
 ❌ Delete a client by account number
 ✏️ Update client information
 🔎 Find a client by account number
-💰 Transactions
+
+###💰 Transactions
+
 💰 Deposit money
 💸 Withdraw money
 📊 Show total balances
-🔐 User & Access Management
+
+###🔐 User & Access Management
+
 🔑 Login system
 👤 Manage users (CRUD operations)
 ➕ Add user ✔️
@@ -24,25 +30,31 @@ It simulates basic banking operations and focuses on practicing file handling, s
 🛡️ Admin permissions
 🚪 Logout functionality
 💾 Users stored in a separate file
-🖥️ Program Screens
 
-Main Menu
+##🖥️ Program Screens
+
+###Main Menu
 (screenshot placeholder)
 
-Transactions Menu
+###Transactions Menu
 (screenshot placeholder)
 
-Manage Users Menu
+###Manage Users Menu
 (screenshot placeholder)
 
-▶️ How to Run
-Clone the repository
+##▶️ How to Run
+
+###1. Clone the repository
+
 git clone https://github.com/ilyassdxebec/bank-management-system-cpp.git
-Open the project
+
+###2. Open the project
 Use Visual Studio or any C++ compiler.
-Run the program
+
+###3. Run the program
 Execute main.cpp.
-💾 Data Storage
+
+##💾 Data Storage
 
 Client data is stored in a .txt file using a custom delimiter:
 
@@ -55,7 +67,8 @@ A150#//#1234#//#John Doe#//#555-1234#//#5000
 User data (login & permissions) is stored in a separate file using the same format.
 All operations use C++ file streams (fstream) — no database.
 
-🧠 What I Practiced
+##🧠 What I Practiced
+
 Structs for modeling data
 File handling (fstream)
 Vectors & iteration
@@ -65,6 +78,8 @@ Console menu systems
 Authentication (login system)
 User management (CRUD + roles, partial)
 Permission/role-based access control
-🛠️ Built With
+
+##🛠️ Built With
+
 C++
 Visual Studio
